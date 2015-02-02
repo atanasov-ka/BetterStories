@@ -2,14 +2,21 @@
 	"manifest_version":2,
 	"name" : "BetterStories",
 	"description" : "TODO description",
-	"version" : "1.0",
-
+	"version" : "1.1",
 	"browser_action" : {
 		"default_icon" : "icon.png",
 		"default_popup" : "popup.html"
 	},
+	"content_scripts": [
+    	{
+	      "matches": ["http://www.abv.bg/*"],
+	      "css": ["mycss.css"],
+	      "js": ["myscript.js"]
+	    }
+    ],
 	"permissions" : [
 		"activeTab",
-		"https://ajax.googleapis.com/"
+		"https://ajax.googleapis.com/",
+		"https://abv.bg/"
 	]	
 }

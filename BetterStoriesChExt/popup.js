@@ -88,6 +88,37 @@ function getImageUrl(searchTerm, callback, errorCallback) {
   x.send();
 }
 
+/**
+ * @return bool
+ */
+function request(type, url, params, callback, errCallback) {
+  
+  var x = new XMLHttpRequest();
+  var url = url + "?q=" + encodeURIComponent(params);
+  x.open("GET", url);
+  x.responseType = 'json';
+  x.onload = function() {
+    // json object
+    var response = x.response;
+
+    /*
+if (!response || !response.responseData || !response.responseData.results ||
+        response.responseData.results.length === 0) {
+      errorCallback('No response from Google Image search!');
+      return;
+    }
+    */
+    
+    // TODO
+    callback("OK 1");
+  }
+  x.onerror = function() {
+    
+    errCallback("error 1");
+    // TODO
+  }
+}
+
 function renderStatus(statusText) {
   document.getElementById('status').textContent = statusText;
 }
@@ -114,5 +145,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }, function(errorMessage) {
       renderStatus('Cannot display image. ' + errorMessage);
     });
-  });
+  }); // end getCurrentTabUrl
 });
