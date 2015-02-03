@@ -1,9 +1,23 @@
 //document.addEventListener('DOMContentLoaded', function() {
-  var main  = document.getElementById('leftSide');
-  main.id = "leftSide2";
+  //var main  = document.getElementById('leftSide');
+  //main.id = "leftSide2";
 //});
 
-makeCorsRequest();
+var dataForAnalize = getElementByXpath('div.news_list > div.item > a[title]');
+var request = {classify: []
+};
+$.each(dataForAnalize, function (key, value) {
+    request.classify.push({
+      "index" : "" + key,
+      "data"  : $(this).attr('title')
+    });
+});
+
+makeCorsRequest(request);
+
+function getElementByXpath (path) {
+  return $(path);
+}
 
 // Create the XHR object.
 function createCORSRequest(method, url) {
@@ -24,13 +38,13 @@ function createCORSRequest(method, url) {
 
 // Helper method to parse the title tag from the response.
 function getTitle(text) {
-  return text.match('<title>(.*)?</title>')[1];
+  return text;//.match('<title>(.*)?</title>')[1];
 }
 
 // Make the actual CORS request.
-function makeCorsRequest() {
+function makeCorsRequest(data) {
   // All HTML5 Rocks properties support CORS.
-  var url = 'http://mail.bg/';
+  var url = 'http://localhost:8080/BetterStoriesServer/classify';
 
   var xhr = createCORSRequest('POST', url);
   if (!xhr) {
@@ -41,13 +55,20 @@ function makeCorsRequest() {
   // Response handlers.
   xhr.onload = function() {
     var text = xhr.responseText;
-    var title = getTitle(text);
-    alert('Response from CORS request to ' + url + ': ' + title);
+    
+    var obj = JSON.parse(text);
+    for (var i = obj.classified.length - 1; i >= 0; i--) {
+       if (obj.classified[i].result == "1") {
+        var index = obj.classified[i].index;
+        var item = $("div.news_list > div.item:has(a[title]):nth-child" + "(" + i + ")");
+        item.attr("betterStories", "block");
+       }
+     };
   };
 
   xhr.onerror = function() {
     alert('Woops, there was an error making the request.');
   };
 
-  xhr.send();
+  xhr.send(JSON.stringify(data));
 }
