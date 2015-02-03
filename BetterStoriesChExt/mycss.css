@@ -1,3 +1,41 @@
-#leftSide2 {
-	background-color: green
+[betterstories = "block"] {
+	-webkit-animation: doblock 1s;
+
+	background-color: gray;
+  	-webkit-filter: blur(3px);
+}
+
+[betterstories = "block"]:hover {
+
+    -webkit-animation: unblock 2.5s;
+    background-color: transparent;
+  	-webkit-filter: blur(0px);
+}
+
+@-webkit-keyframes doblock {
+	0% {
+    	background-color: transparent;
+    }
+    20% {
+    	background-color: gray;
+    }
+    100% {
+    	background-color: gray;
+    	-webkit-filter: blur(3px);
+    }
+}
+
+@-webkit-keyframes unblock {
+    0% {
+    	background-color: gray;
+    	-webkit-filter: blur(3px);
+    }
+    20% {
+    	background-color: transparent;
+    	-webkit-filter: blur(3px);
+    }
+    100% {
+    	background-color: transparent;
+    	-webkit-filter: blur(0px);
+    }
 }
