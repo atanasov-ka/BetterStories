@@ -60,7 +60,7 @@ function makeCorsRequest(data) {
     for (var i = obj.classified.length - 1; i >= 0; i--) {
        if (obj.classified[i].result == "1") {
         var index = obj.classified[i].index;
-        var item = $("div.news_list > div.item:has(a[title]):nth-child" + "(" + i + ")");
+        var item = $("div.news_list > div.item:has(a[title]):nth-child" + "(" + (i + 2) + ")");
         item.attr("betterStories", "block");
        }
      };
