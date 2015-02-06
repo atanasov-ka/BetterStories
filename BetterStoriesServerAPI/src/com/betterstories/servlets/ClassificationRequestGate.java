@@ -69,7 +69,7 @@ public class ClassificationRequestGate extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().write("Method do GET was called!");
+		
 		training("bad", inputDirBad, charset, outputDirBad, databaseOutputDir);
 		training("good", inputDirGood, charset, outputDirBad, databaseOutputDir);
 		
@@ -87,7 +87,7 @@ public class ClassificationRequestGate extends HttpServlet {
 			*/
 		
 		TrainClassifier.trainNaiveBayes(new Path(outputDirBad), new Path(databaseOutputDir), bayesParameters);
-		
+		response.getWriter().write("Training is DONE!");
 	}
 
 	/**
@@ -162,7 +162,7 @@ public class ClassificationRequestGate extends HttpServlet {
 	 private BayesParameters buildBayesParam(String charset, String databaseOutputDir) {
 		 
 		   BayesParameters bayesParameters = new BayesParameters();	 
-		   bayesParameters.setGramSize(3);	 
+		   bayesParameters.setGramSize(2);	 
 		   bayesParameters.set("verbose", "true"); //If you want to see what happen.	 
 		   bayesParameters.set("classifierType", "bayes");	 
 		   bayesParameters.set("defaultCat", "other"); //The default category to return if a label is not found for a specified text.	 
@@ -195,7 +195,7 @@ public class ClassificationRequestGate extends HttpServlet {
 	   ClassifierContext context = new ClassifierContext(algorithm, datastore);	 
 	   context.initialize();
 	
-	   List< String > document = new NGrams( contentToClassify, 3 ).generateNGramsWithoutLabel();
+	   List< String > document = new NGrams( contentToClassify, 2 ).generateNGramsWithoutLabel();
 	   
 	   //Make the search	 
 	   ClassifierResult classifyResult = context.classifyDocument(document.toArray( new String[ document.size() ] ), "good");
