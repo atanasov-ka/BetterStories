@@ -39,3 +39,11 @@
     	-webkit-filter: blur(0px);
     }
 }
+
+
+[betterstories = "good"]{
+background-color: green;
+}
+[betterstories = "bad"] {
+	background-color: red;
+}

@@ -1,7 +1,9 @@
 package com.betterstories.servlets;
 
+import java.io.Console;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Random;
@@ -12,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.fs.Path;
 import org.apache.mahout.classifier.BayesFileFormatter;
 import org.apache.mahout.classifier.ClassifierResult;
@@ -105,21 +108,44 @@ public class ClassificationRequestGate extends HttpServlet {
 		JSONArray arrayResponse = new JSONArray();
 		
 		JSONObject root = new JSONObject(requested.toString());
-		JSONArray elements = root.getJSONArray("classify");
-		for (int i = 0; i < elements.length(); ++i) {
-			JSONObject elem = elements.getJSONObject(i);
-			String index = elem.getString("index");
-			String data = elem.getString("data");
-			int result = classify(data);
+		if (root.has("store")) {
+			JSONObject storeElem = root.getJSONObject("store");
+			String data = storeElem.getString("data");
+			String type = storeElem.getString("type");
+			System.out.println(root.toString());
+			File file = null;
+			if (type.equals("bad")) 
+			{
+				file = new File(inputDirBad + "\\" + data.replace("\"", "").replace("'", ""));
+			} 
+			else if (type.equals("good")) 
+			{
+				file = new File(inputDirGood + "\\" + data.replace("\"", "").replace("'", ""));
+			}
+			else 
+				return;
 			
-			JSONObject classified = new JSONObject();
-			classified.put("index", index);
-			classified.put("result", result);
-			arrayResponse.put(classified);
-		}
-		
-		responseRoot.put("classified", arrayResponse);
-		response.getWriter().write(responseRoot.toString());		
+			if (file != null)
+				FileUtils.writeStringToFile(file, data, "UTF-8");
+			
+		} 
+		else {
+			JSONArray elements = root.getJSONArray("classify");
+			for (int i = 0; i < elements.length(); ++i) {
+				JSONObject elem = elements.getJSONObject(i);
+				String index = elem.getString("index");
+				String data = elem.getString("data");
+				int result = classify(data);
+				
+				JSONObject classified = new JSONObject();
+				classified.put("index", index);
+				classified.put("result", result);
+				arrayResponse.put(classified);
+			}
+			
+			responseRoot.put("classified", arrayResponse);
+			response.getWriter().write(responseRoot.toString());
+		}		
 	}
 	
 	private int classify(String input) {
